@@ -2,14 +2,13 @@
 // Replication of Aoki, Benigno, and Kiyotaki (2016, working paper)
 // David Murakami
 
-
 // Declare variables
 // Price variables
 var mc $mc$                 (long_name='marginal cost')
     Pi $\Pi$                (long_name='gross inflation')
     Z $Z$                   (long_name='rental price of capital')
     w $w$                   (long_name='real wages')
-    int $i$                 (long_name='net nominal interest rate')
+    n_int $i$               (long_name='net nominal interest rate')
     R $R$                   (long_name='gross real interest rate')
     epsilon $\epsilon$      (long_name='real exchange rate')
     Q $Q$                   (long_name='equity price')
@@ -135,7 +134,7 @@ model;
 Lambda = betta*(C(-1)-zeta_0*L(-1)^(1+zeta)/(1+zeta))/(C-zeta_0*L^(1+zeta)/(1+zeta));
 
 [name='Fisher equation']
-R = (1+int(-1))/Pi;
+R = (1+n_int(-1))/Pi;
 
 [name='extra management cost of buying equity']
 chi = varkappa/2*K_h^2;
@@ -228,7 +227,7 @@ x = epsilon*D_star/(Q*K_b);
 K = K_b + K_h;
 
 [name='Taylor rule, eq. (30)']
-int-i_ss = (1-rho_i)*omega_pi*(Pi-1) + rho_i*(int(-1)-i_ss) + varepsilon_R;
+n_int-i_ss = (1-rho_i)*omega_pi*(Pi-1) + rho_i*(n_int(-1)-i_ss) + varepsilon_R;
 
 // Laws of motion and shock processes
 [name='productivity']
@@ -249,7 +248,7 @@ mc =   0.888889;
 Pi =   1.000000;
 Z =   0.041627;
 w =   4.571565;
-int =   0.015228;
+n_int =   0.015228;
 epsilon =   1.000000;
 Q =   1.000000;
 Y =   2.633920;
@@ -296,65 +295,65 @@ end ;
 stoch_simul(order=1,irf=80,periods=2000,nodisplay,loglinear);
 write_latex_dynamic_model;
 
-set(0,'DefaultAxesTitleFontWeight','normal')
-figure('Name','Baseline impulse responses to foreign interest rate shock without policy')
-subplot(4,4,1)
-plot(Y_varepsilon_Rstar,'b')
-axis tight
-title('Output')
+set(0,'DefaultAxesTitleFontWeight','normal');
+figure('Name','Baseline impulse responses to foreign interest rate shock without policy');
+subplot(4,4,1);
+plot(Y_varepsilon_Rstar,'b');
+axis tight;
+title('Output');
 
-subplot(4,4,2)
-plot(C_varepsilon_Rstar,'b')
-axis tight
-title('Consumption')
+subplot(4,4,2);
+plot(C_varepsilon_Rstar,'b');
+axis tight;
+title('Consumption');
 
-subplot(4,4,3)
-plot(I_varepsilon_Rstar,'b')
-axis tight
-title('Investment')
+subplot(4,4,3);
+plot(I_varepsilon_Rstar,'b');
+axis tight;
+title('Investment');
 
-subplot(4,4,4)
-plot(EX_varepsilon_Rstar,'b')
-axis tight
-title('Exports')
+subplot(4,4,4);
+plot(EX_varepsilon_Rstar,'b');
+axis tight;
+title('Exports');
 
-subplot(4,4,5)
-plot(M_varepsilon_Rstar,'b')
-axis tight
-title('Imports')
+subplot(4,4,5);
+plot(M_varepsilon_Rstar,'b');
+axis tight;
+title('Imports');
 
-subplot(4,4,6)
-plot(D_star_varepsilon_Rstar,'b')
-axis tight
-title('Net foreign debt')
+subplot(4,4,6);
+plot(D_star_varepsilon_Rstar,'b');
+axis tight;
+title('Net foreign debt');
 
-subplot(4,4,7)
-plot(epsilon_varepsilon_Rstar,'b')
-axis tight
-title('Real exchange rate')
+subplot(4,4,7);
+plot(epsilon_varepsilon_Rstar,'b');
+axis tight;
+title('Real exchange rate');
 
-subplot(4,4,8)
-plot(Q_varepsilon_Rstar,'b')
-axis tight
-title('Capital price')
+subplot(4,4,8);
+plot(Q_varepsilon_Rstar,'b');
+axis tight;
+title('Capital price');
 
-subplot(4,4,9)
-plot(N_varepsilon_Rstar,'b')
-axis tight
-title('Net worth')
+subplot(4,4,9);
+plot(N_varepsilon_Rstar,'b');
+axis tight;
+title('Net worth');
 
-subplot(4,4,10)
-plot(Pi_varepsilon_Rstar,'b')
-axis tight
-title('Inflation (gross)')
+subplot(4,4,10);
+plot(Pi_varepsilon_Rstar,'b');
+axis tight;
+title('Inflation (gross)');
 
-subplot(4,4,11)
-plot(int_varepsilon_Rstar,'b')
-axis tight
-title('Nominal interest (net)')
+subplot(4,4,11);
+plot(n_int_varepsilon_Rstar,'b');
+axis tight;
+title('Nominal interest (net)');
 
-subplot(4,4,12)
-plot(R_star_varepsilon_Rstar,'b')
-axis tight
-title('Foreign interest (gross)')
+subplot(4,4,12);
+plot(R_star_varepsilon_Rstar,'b');
+axis tight;
+title('Foreign interest (gross)');
 supersizeme(0.6);
