@@ -81,7 +81,6 @@ parameters  theta $\theta$ (long_name='divertable proportion of assets')
             siggma_istar $\sigma_{i*}$ (long_name='standard deviation of foreign interest rate shock')
             siggma_A $\sigma_{A}$ (long_name='standard deviation of TFP shock')
             siggma_Ystar $\sigma_{Y*}$ (long_name='standard deviation of foreign income shock')
-            omega_tauDstar $\omega_{\tau^{D*}}$ (long_name='coefficient for cyclical tax policy')
 //Steady state values
             I_ss $\bar{I}$ (long_name='ss investment')
             A_ss $\bar{A}$ (long_name='ss productivity')
@@ -114,7 +113,6 @@ parameters  theta $\theta$ (long_name='divertable proportion of assets')
             siggma_istar = 0.01;
             siggma_A = 0.013;
             siggma_Ystar = 0.03;
-            omega_tauDstar = 0.1;
             I_ss = 1.6;
             A_ss = 1;
             R_star_ss = (1.02)^(1/4);
@@ -127,11 +125,11 @@ model;
 #kappa = (eta-1)*omega/((1-omega)*(1-betta*omega));
 //R_ss $\bar{R}$ (long_name='ss gross interest rate')
 #R_ss = 1/betta;
-//i_ss $\bar{i}$ (long_name='ss net interest rate')
-#i_ss = 1-1/betta;
+//i_ss $\bar{i}$ (long_name='ss de-annualised net interest rate')
+#i_ss = (1+(R_ss)^4/100)^(1/4)-1;
 
 [name='stochastic discount factor']
-Lambda = betta*(C(-1)-zeta_0*L(-1)^(1+zeta)/(1+zeta))/(C-zeta_0*L^(1+zeta)/(1+zeta));
+Lambda(-1) = betta*(C(-1)-zeta_0*L(-1)^(1+zeta)/(1+zeta))/(C-zeta_0*L^(1+zeta)/(1+zeta));
 
 [name='Fisher equation']
 R = (1+n_int(-1))/Pi;
@@ -295,6 +293,7 @@ end ;
 stoch_simul(order=1,irf=80,periods=2000,nodisplay,loglinear);
 write_latex_dynamic_model;
 
+%%% Plots require supersizeme.m. Disable supersizeme() if package not installed.
 set(0,'DefaultAxesTitleFontWeight','normal');
 figure('Name','Baseline impulse responses to foreign interest rate shock without policy');
 subplot(4,4,1);
