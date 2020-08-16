@@ -132,7 +132,8 @@ model;
 Lambda(-1) = betta*(C(-1)-zeta_0*L(-1)^(1+zeta)/(1+zeta))/(C-zeta_0*L^(1+zeta)/(1+zeta));
 
 [name='Fisher equation']
-R = (1+n_int(-1))/Pi;
+R = (1+n_int)/Pi(+1);
+//ABK uses backward looking Fisher eqn: R = (1+n_int(-1))/Pi
 
 [name='extra management cost of buying equity']
 chi = varkappa/2*K_h^2;
@@ -293,7 +294,8 @@ end ;
 stoch_simul(order=1,irf=80,periods=2000,nodisplay,loglinear);
 write_latex_dynamic_model;
 
-%%% Plots require supersizeme.m. Disable supersizeme() if package not installed.
+%%%Plots require supersizeme.m. Disable supersizeme() if package not installed.
+%%%Plots below are only for the foreign interest rate shock.
 set(0,'DefaultAxesTitleFontWeight','normal');
 figure('Name','Baseline impulse responses to foreign interest rate shock without policy');
 subplot(4,4,1);
