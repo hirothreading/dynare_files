@@ -10,7 +10,7 @@ For those looking for more reference .mod files for their macro DSGE research, t
 Feedback is always welcome for these things. So please [email me](mailto:david.murakami@economics.ox.ac.uk) for any queries or advice you may have.
 
 ### Aoki, Benigno, and Kiyotaki (2016)
-This is a replication of "Monetary and Financial Policies in Emerging Markets" working paper. The code is based on the October 2018 revision of the paper.
+This is a replication of the "Monetary and Financial Policies in Emerging Markets" working paper. The code is based on the October 2018 revision of the paper.
 
 ### Hansen's simple RBC model
 A baseline, simple RBC model. This was just a pipecleaner, really, to get this project off the ground.
