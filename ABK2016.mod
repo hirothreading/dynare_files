@@ -324,55 +324,93 @@ stoch_simul(order=1,irf=80,nodisplay) ; //Ynet C I EX M D_star epsilon Q N Pi R 
 
 //Make plots
 %%%Plots require supersizeme.m. Disable supersizeme() if package not installed.
-%%%Plots below are only for the foreign interest rate shock.
+// Get steady state
+%%%First, we need to extract the steady state values that Dynare computed.
+%%%Then, we can show percent deviations from steady state in our plots.
+%%%Get declared variable ordering:
+mc_pos    =strmatch('mc',M_.endo_names,'exact');
+Pi_pos    =strmatch('Pi',M_.endo_names,'exact');
+Z_pos     =strmatch('Z',M_.endo_names,'exact');
+w_pos     =strmatch('w',M_.endo_names,'exact');
+R_pos     =strmatch('R',M_.endo_names,'exact');
+eps_pos   =strmatch('epsilon',M_.endo_names,'exact');
+Q_pos     =strmatch('Q',M_.endo_names,'exact');
+Y_pos     =strmatch('Y',M_.endo_names,'exact');
+M_pos     =strmatch('M',M_.endo_names,'exact');
+L_pos     =strmatch('L',M_.endo_names,'exact');
+C_pos     =strmatch('C',M_.endo_names,'exact');
+I_pos     =strmatch('I',M_.endo_names,'exact');
+K_pos     =strmatch('K',M_.endo_names,'exact');
+EX_pos    =strmatch('EX',M_.endo_names,'exact');
+N_pos     =strmatch('N',M_.endo_names,'exact');
+Kb_pos    =strmatch('K_b',M_.endo_names,'exact');
+Kh_pos    =strmatch('K_h',M_.endo_names,'exact');
+D_pos     =strmatch('D',M_.endo_names,'exact');
+Dstar_pos =strmatch('D_star',M_.endo_names,'exact');
+x_pos     =strmatch('x',M_.endo_names,'exact');
+psi_pos   =strmatch('psi',M_.endo_names,'exact');
+phi_pos   =strmatch('phi',M_.endo_names,'exact');
+ups_pos   =strmatch('upsilon',M_.endo_names,'exact');
+mu_pos    =strmatch('mu',M_.endo_names,'exact');
+mustar_pos=strmatch('mu_Dstar',M_.endo_names,'exact');
+A_pos     =strmatch('A',M_.endo_names,'exact');
+Rstar_pos =strmatch('R_star',M_.endo_names,'exact');
+Ystar_pos =strmatch('Y_star',M_.endo_names,'exact');
+Phi_pos  =strmatch('Phi',M_.endo_names,'exact');
+Theta_pos =strmatch('Theta',M_.endo_names,'exact');
+chi_h_pos =strmatch('chi_h',M_.endo_names,'exact');
+chi_b_pos =strmatch('chi_b',M_.endo_names,'exact');
+Ynet_pos  =strmatch('Ynet',M_.endo_names,'exact');
+%%%Steady state values are stored in: oo_.dr.ys
+
 set(0,'DefaultAxesTitleFontWeight','normal');
 figure('Name','Baseline impulse responses to foreign interest rate shock without policy');
 subplot(4,4,1);
-plot(Ynet_varepsilon_Rstar,'b-','LineWidth',1);
+plot(Ynet_varepsilon_Rstar/oo_.dr.ys(Ynet_pos),'b-','LineWidth',1);
 axis tight;
 title('Net output');
 
 subplot(4,4,2);
-plot(C_varepsilon_Rstar,'b-','LineWidth',1);
+plot(C_varepsilon_Rstar/oo_.dr.ys(C_pos),'b-','LineWidth',1);
 axis tight;
 title('Consumption');
 
 subplot(4,4,3);
-plot(I_varepsilon_Rstar,'b-','LineWidth',1);
+plot(I_varepsilon_Rstar/oo_.dr.ys(I_pos),'b-','LineWidth',1);
 axis tight;
 title('Investment');
 
 subplot(4,4,4);
-plot(EX_varepsilon_Rstar,'b-','LineWidth',1);
+plot(EX_varepsilon_Rstar/oo_.dr.ys(EX_pos),'b-','LineWidth',1);
 axis tight;
 title('Exports');
 
 subplot(4,4,5);
-plot(M_varepsilon_Rstar,'b-','LineWidth',1);
+plot(M_varepsilon_Rstar/oo_.dr.ys(M_pos),'b-','LineWidth',1);
 axis tight;
 title('Imports');
 
 subplot(4,4,6);
-plot(D_star_varepsilon_Rstar,'b-','LineWidth',1);
+plot(D_star_varepsilon_Rstar/oo_.dr.ys(Dstar_pos),'b-','LineWidth',1);
 axis tight;
 title('Net foreign debt');
 
 subplot(4,4,7);
-plot(epsilon_varepsilon_Rstar,'b-','LineWidth',1);
+plot(epsilon_varepsilon_Rstar/oo_.dr.ys(eps_pos),'b-','LineWidth',1);
 axis tight;
 title('Real exchange rate');
 
 subplot(4,4,8);
-plot(Q_varepsilon_Rstar,'b-','LineWidth',1);
+plot(Q_varepsilon_Rstar/oo_.dr.ys(Q_pos),'b-','LineWidth',1);
 axis tight;
 title('Capital price');
 
 subplot(4,4,9);
-plot(N_varepsilon_Rstar,'b-','LineWidth',1);
+plot(N_varepsilon_Rstar/oo_.dr.ys(N_pos),'b-','LineWidth',1);
 axis tight;
 title('Net worth');
 
-//Inflation and interest rates need to be scaled to annual rates, so multiply by 4
+%%% these rates need to be annualised, so multiply by 4:
 subplot(4,4,10);
 plot(4*Pi_varepsilon_Rstar,'b-','LineWidth',1);
 axis tight;
