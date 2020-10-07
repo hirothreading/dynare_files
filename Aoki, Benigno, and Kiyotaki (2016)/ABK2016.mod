@@ -83,7 +83,6 @@ parameters  theta $\theta$                      (long_name='elasticity of levera
             sigma_istar $\sigma_{i*}$           (long_name='standard deviation of foreign interest rate shock')
             sigma_A $\sigma_{A}$                (long_name='standard deviation of TFP shock')
             sigma_Ystar $\sigma_{Y*}$           (long_name='standard deviation of foreign income shock')
-            omega_tauDstar $\omega_{\tau^{D*}}$ (long_name='coefficient for cyclical tax policy')
 ;
 
 //Parameterise
@@ -113,7 +112,6 @@ parameters  theta $\theta$                      (long_name='elasticity of levera
             sigma_istar = 0.0025;   //25 basis point shock
             sigma_A = 0.013;
             sigma_Ystar = 0.03;
-            omega_tauDstar = 0.05;
             A_ss = 1;
 
 
