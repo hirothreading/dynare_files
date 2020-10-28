@@ -14,3 +14,6 @@ This is a replication of the "Monetary and Financial Policies in Emerging Market
 
 ### Hansen's simple RBC model
 A baseline, simple RBC model. This was just a pipecleaner, really, to get this project off the ground.
+
+### Simple Search and Match model
+A simple, baseline SAM model.
