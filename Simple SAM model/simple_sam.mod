@@ -72,32 +72,32 @@ model;
 
 
 // Specify observation equations
-// Probability of finding a job (eq. 1)
-f = M/U;
+[name='Probability of finding a job (eq. 1)']
+f = M/U(-1);
 
-// Probability of filling a job (eq. 2)
+[name='Probability of filling a job (eq. 2)']
 q = M/V;
 
-// Matching function (total hires) (eq. 3)
-M = m*U^mu*V^(1-mu);
+[name='Matching function (total hires) (eq. 3)']
+M = m*U(-1)^mu*V^(1-mu);
 
-// Law of motion of unemployment (eq. 4)
+[name='Law of motion of unemployment (eq. 4)']
 U = (1-f)*U(-1) + s*(1-U(-1));
 
-// Free entry condition (eq. 5)
+[name='Free entry condition (eq. 5)']
 kapppa = q*betta*J(+1);
 
-// Worker output (eq. 6)
+[name='Worker output (eq. 6)']
 y = 1 - rho_y + rho_y*y(-1) + epsilon_y;
 
-// Wages (eq. 7)
+[name='Wages (eq. 7)']
 w = alppha*y;
 
-// Employment transition equation (eq. 8)
+[name='Employment transition equation (eq. 8)']
 J = y - w + betta*(1-s)*J(+1);
 
-// Labour market tightness (eq. 9)
-thetta = V/U;
+[name='Labour market tightness (eq. 9)']
+thetta = V/U(-1);
 end;
 
 
@@ -138,5 +138,9 @@ stoch_simul(order=1,nomoments, irf=20, periods = 1000, nograph);
 
 
 // Make plots
-U_irf = U_ss - oo_.irfs.U_epsilon_y;
-figure, plot(1:20,U_irf*100,'k','LineWidth',2),ylabel('percent')
+// Positive productivity shock
+U_pos=strmatch('U',M_.endo_names,'exact');
+figure;
+plot(U_epsilon_y/oo_.dr.ys(U_pos),'b-','LineWidth',1);
+axis tight;
+title('Unemployment %ch to positive output shock');
