@@ -237,13 +237,13 @@ R-1-(R_ss-1) = (1-rho_i)*omega_pi*(Pi-1) + rho_i*(R(-1)-1-(R_ss-1)) + varepsilon
 
 // Laws of motion and shock processes
 [name='productivity']
-log(A/A_ss) = rho_A*log(A(-1)/A_ss) + varepsilon_A;
+A = 1 - rho_A + rho_A*A(-1) + varepsilon_A;
 
 [name='foreign income']
-log(Y_star/Y_star_ss) = rho_Ystar*log(Y_star(-1)/Y_star_ss) + varepsilon_Ystar;
+Y_star = (1-rho_Ystar)*Y_star_ss + rho_Ystar*Y_star(-1) + varepsilon_Ystar;
 
 [name='foreign interest rate']
-log(R_star/R_star_ss) = rho_Rstar*log(R_star(-1)/R_star_ss) + varepsilon_Rstar;
+R_star = (1 - rho_Rstar)*R_star_ss + rho_Rstar*R_star(-1) + varepsilon_Rstar;
 
 
 //Observed variables
@@ -363,63 +363,63 @@ Ynet_pos  =strmatch('Ynet',M_.endo_names,'exact');
 
 set(0,'DefaultAxesTitleFontWeight','normal');
 figure('Name','Baseline impulse responses to foreign interest rate shock without policy');
-subplot(4,4,1);
+subplot(3,4,1);
 plot(Ynet_varepsilon_Rstar/oo_.dr.ys(Ynet_pos),'b-','LineWidth',1);
 axis tight;
 title('Net output');
 
-subplot(4,4,2);
+subplot(3,4,2);
 plot(C_varepsilon_Rstar/oo_.dr.ys(C_pos),'b-','LineWidth',1);
 axis tight;
 title('Consumption');
 
-subplot(4,4,3);
+subplot(3,4,3);
 plot(I_varepsilon_Rstar/oo_.dr.ys(I_pos),'b-','LineWidth',1);
 axis tight;
 title('Investment');
 
-subplot(4,4,4);
+subplot(3,4,4);
 plot(EX_varepsilon_Rstar/oo_.dr.ys(EX_pos),'b-','LineWidth',1);
 axis tight;
 title('Exports');
 
-subplot(4,4,5);
+subplot(3,4,5);
 plot(M_varepsilon_Rstar/oo_.dr.ys(M_pos),'b-','LineWidth',1);
 axis tight;
 title('Imports');
 
-subplot(4,4,6);
+subplot(3,4,6);
 plot(D_star_varepsilon_Rstar/oo_.dr.ys(Dstar_pos),'b-','LineWidth',1);
 axis tight;
 title('Net foreign debt');
 
-subplot(4,4,7);
+subplot(3,4,7);
 plot(epsilon_varepsilon_Rstar/oo_.dr.ys(eps_pos),'b-','LineWidth',1);
 axis tight;
 title('Real exchange rate');
 
-subplot(4,4,8);
+subplot(3,4,8);
 plot(Q_varepsilon_Rstar/oo_.dr.ys(Q_pos),'b-','LineWidth',1);
 axis tight;
 title('Capital price');
 
-subplot(4,4,9);
+subplot(3,4,9);
 plot(N_varepsilon_Rstar/oo_.dr.ys(N_pos),'b-','LineWidth',1);
 axis tight;
 title('Net worth');
 
 %%% these rates need to be annualised, so multiply by 4:
-subplot(4,4,10);
+subplot(3,4,10);
 plot(4*Pi_varepsilon_Rstar,'b-','LineWidth',1);
 axis tight;
 title('Inflation');
 
-subplot(4,4,11);
+subplot(3,4,11);
 plot(4*R_varepsilon_Rstar,'b-','LineWidth',1);
 axis tight;
 title('Nominal interest (gross)');
 
-subplot(4,4,12);
+subplot(3,4,12);
 plot(4*R_star_varepsilon_Rstar,'b-','LineWidth',1);
 axis tight;
 title('Foreign interest rate');
