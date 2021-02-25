@@ -15,8 +15,9 @@ var ld      $\ln d$         (long_name='foreign liabilities')
     lk      $\ln k$         (long_name='capital')
     li      $\ln i$         (long_name='investment')
     lA      $\ln A$         (long_name='total factor productivity')
-    lnx     $\ln nx$        (long_name='trade balance')
-    ca     $\ln ca$        (long_name='current account balance')
+    nx      $nx$            (long_name='trade balance')
+    ca      $ca$            (long_name='current account balance')
+    nxy     $nx/y$          (long_name='trade balance to output ratio')
     ;
 
 
@@ -33,6 +34,7 @@ parameters betta    $\beta$     (long_name='household discount factor')
            alphha   $\alpha$    (long_name='capital share of income')
            rhoA     $\rho_A$    (long_name='persistence of TFP shock')
            sigA     $\sigma_A$  (long_name='standard deviation of shock process of TFP')
+           etaA     $\eta_A$    (long_name='scale factor for TFP shock')
            phii     $\phi$      (long_name='governs magnitude of capital adjustment costs')
            psii     $\psi$      (long_name='debt sensitivity of the interest rate')
            kap      $\kappa$    (long_name='capital output ratio in steady state')
@@ -45,6 +47,7 @@ omega = 1.455;
 alphha = 0.32;
 rhoA = 0.42; //initial guess
 sigA = 1; //standard 1% shock
+etaA = 1; //initial guess
 phii = 0.028; //initial guess
 psii = 0.000742; //initial guess
 kap = ((betta^-1 - 1 + del)/alphha)^(1/(alphha-1));
@@ -73,7 +76,7 @@ model;
 #barc = (1-barRstar)*bard + kap^alphha*barh - del*bark;
 
 [name='eq.(3) process for TFP']
-lA = (1-rhoA)*steady_state(lA) + rhoA*lA(-1) + epsA/100;
+lA = (1-rhoA)*steady_state(lA) + rhoA*lA(-1) + etaA*epsA/100;
 
 [name='eq.(4) gross interest rate/country interest premium']
 exp(lR) = barRstar + psii*(exp(exp(ld)-bard)-1);
@@ -108,10 +111,13 @@ exp(lw) = (1-alphha)*lA*exp(lk(-1))^alphha*h^(-alphha);
 //rk(-1) = alphha*lA*exp(lk(-1))^(alphha-1)*h^(1-alphha);
 
 [name='eq.(26) trade balance']
-exp(lnx) = exp(ly) - exp(lc) - exp(li) - phii/2*(exp(lk)-exp(lk(-1)))^2;
+nx = exp(ly) - exp(lc) - exp(li) - phii/2*(exp(lk)-exp(lk(-1)))^2;
 
 [name='eq.(27.1) current account balance in terms of external debt']
 ca = exp(ld(-1)) - exp(ld);
+
+[name='trade balance to output ratio (for ease of model comparison)']
+nxy = nx/exp(ly);
 
 end;
 
@@ -128,8 +134,9 @@ ly = log(1.460248703);
 lk = log(3.298444128);
 li = log(0.329844413);
 lA = 1.000000000;
-lnx = log(0.029204974);
+nx = 0.029204974;
 ca = 0;
+nxy=0.02;
 end;
 
 
@@ -146,6 +153,7 @@ write_latex_dynamic_model;
 write_latex_parameter_table;
 write_latex_definitions;
 
+options_.TeX=1;
 stoch_simul(order=1,irf=10,nodisplay);
 
 h_pos=strmatch('h',M_.endo_names,'exact');
@@ -174,7 +182,7 @@ axis tight;
 title('Hours');
 
 subplot(3,2,5);
-plot(lnx_epsA-ly_epsA,'b-','LineWidth',1);
+plot(nxy_epsA,'b-','LineWidth',1);
 axis tight;
 title('Trade Balance/Output');
 
