@@ -37,11 +37,12 @@ lc = barc;
 llam = (barc-barh^omega/omega)^(-sig);
 lw = h^(omega-1);
 li = lk - (1-del)*lk;
-rk = alphha*lA*lk^(alphha-1)*h^(1-alphha);
+%rk = alphha*lA*lk^(alphha-1)*h^(1-alphha);
 lpi = rk*lk - li - phii/2*(lk-lk)^2;
 lps = (betta*llam*lpi)/(llam - betta*llam);
-lnx = ly - lc -li - phii/2*(lk-lk)^2;
+nx = ly - lc -li - phii/2*(lk-lk)^2;
 ca = 0;
+nxy=0.02; 
 
 fprintf('\n//Steady state values:\n');
 fprintf('\nld = %10.9f;\n',ld);
@@ -54,9 +55,9 @@ fprintf('\nh = %10.9f;\n',h);
 fprintf('\nlw = %10.9f;\n',lw);
 fprintf('\nllam = %10.9f;\n',llam);
 fprintf('\nly = %10.9f;\n',ly);
-fprintf('\nrk = %10.9f;\n',rk);
+%fprintf('\nrk = %10.9f;\n',rk); %not needed
 fprintf('\nlk = %10.9f;\n',lk);
 fprintf('\nli = %10.9f;\n',li);
 fprintf('\nlA = %10.9f;\n',lA);
-fprintf('\nlnx = %10.9f;\n',lnx);
+fprintf('\nlnx = %10.9f;\n',nx);
 fprintf('\nca = %10.9f;\n',ca);
