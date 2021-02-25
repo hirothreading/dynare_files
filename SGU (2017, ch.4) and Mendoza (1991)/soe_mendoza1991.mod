@@ -94,7 +94,7 @@ exp(llam) = (exp(lc)-h^omega/omega)^(-sig);
 exp(llam)*h^(omega-1) = (1-alphha)*exp(llam)*exp(ly)/h;
 
 [name='eq.(11) FOC wrt k'] //replaces eq.(24)
-exp(llam)*(1+phii*(exp(lk)-exp(lk(-1)))) = betta*exp(llam(+1))*(alphha*exp(ly)/exp(lk)+1-del+phii*(exp(lk(+1))-exp(lk)));
+exp(llam)*(1+phii*(exp(lk)-exp(lk(-1)))) = betta*exp(llam(+1))*(alphha*exp(ly(+1))/exp(lk)+1-del+phii*(exp(lk(+1))-exp(lk)));
 
 [name='eq.(12) FOC wrt external debt']
 exp(llam) = betta*exp(lR)*exp(llam(+1));
