@@ -4,20 +4,31 @@
 // For use by Dynare 4.6.3
 // Loops based on the replication by Johannes Pfeifer
 
-@#define OPTIMAL = 0
+/*
+This is the baseline "all in one file". If you wish to replicate the plots,
+IRFs, and standard deviations tables from the GM paper, then either:
+a) Run this code manually four times for each of the cases below (OPTIMAL, DITR,
+CITR, and PEG), and then run the "murakami_gm2005_tabfig.m" MATLAB file.
+or
+b) Download the four Dynare mod files "murakami_gm2005_OP.mod",
+"murakami_gm2005_DITR.mod", "murakami_gm2005_CITR.mod", and
+"murakami_gm2005_PEG.mod" to your directory and then run the
+"murakami_gm2005_run.m" MATLAB file.
+*/
+
+@#define OPTIMAL = 1
 @#define DITR = 0
 @#define CITR = 0
-@#define PEG = 1
+@#define PEG = 0
 
-% define string for saving different policies
 @#if DITR == 1
-    case_title='domestic inflation-based Taylor rule (DITR)';
+    case_title='Domestic Inflation Taylor Rule (DITR)';
 @#else
     @#if CITR ==1
-         case_title='CPI inflation-based Taylor rule (CITR)';
+         case_title='CPI Inflation Taylor Rule (CITR)';
     @#else
         @#if PEG ==1
-             case_title='exchange rate peg (PEG)';
+             case_title='Exchange Rate Peg (PEG)';
         @#else
             @#if OPTIMAL ==1
                  case_title='Optimal Policy';
@@ -29,13 +40,13 @@
 @#endif
 
 // Define variables
-var pih     $\pi^H$         (long_name='Domestic inflation')
-    x       $x$             (long_name='Output gap')
-    r       $i$             (long_name='Net nominal interest rate')
-    pic     $\pi^C$         (long_name='CPI inflation')
-    tot     $\tau$          (long_name='Terms of trade')
-    ner     $e$             (long_name='Nominal exchange rate')
-    der     $\Delta e$      (long_name='Nominal exchange rate depreciation')
+var pih     $\pi^H$         (long_name='Domestic Inflation')
+    x       $x$             (long_name='Output Gap')
+    r       $i$             (long_name='Net Nominal Interest Rate')
+    pic     $\pi^C$         (long_name='CPI Inflation')
+    tot     $\tau$          (long_name='Terms of Trade')
+    ner     $e$             (long_name='Nominal Exchange Rate')
+    der     $\Delta e$      (long_name='Nominal Exchange Rate Depreciation')
     // Exogenous processes
     z       $z$             (long_name='Difference between foreign output and natural level of output')
     rn      $r^n$           (long_name='Net natural interest rate')
@@ -126,7 +137,7 @@ r = PHIPI*pih; // domestic inflation-based Taylor rule (DITR)
         @#else
             @#if OPTIMAL ==1
             [name='Optimal policy rule (7)']
-            pih=0;
+            x - x(-1) = -KAPPA*LPI*pih; // Optimal policy under commitment
             @#else
 
             @#endif
@@ -165,14 +176,119 @@ var epsrstar = 1;
 end;
 
 
-write_latex_dynamic_model;
-write_latex_parameter_table;
-write_latex_definitions;
+//write_latex_dynamic_model;
+//write_latex_parameter_table;
+//write_latex_definitions;
 
 
-stoch_simul(TeX,order=1,irf=20,irf_plot_threshold=0) pih x pic tot r der;
+%Save results
+@#if DITR == 1
+    stoch_simul(order=1,nodisplay,irf=20); //pih x pic tot r der;
 
 
-collect_latex_files;
+    %find output gap and inflation in covariance matrix
+    x_pos=strmatch('x',M_.endo_names,'exact');
+    pih_pos=strmatch('pih',M_.endo_names,'exact');
 
-var_string={'pih','x','pic','tot','r','der'};
+
+    %%%%% Get standard deviations under DITR %%%%%
+    var_string={'pih','x','pic','tot','r','der'};
+    fprintf('\nTABLE 1: Cyclical properties of alternative policy regimes\n')
+    fprintf('Case: %s\n', case_title)
+    for var_iter=1:length(var_string)
+        var_pos=strmatch(var_string{var_iter},M_.endo_names,'exact');
+        cyc_moments(var_iter,1)=sqrt(oo_.var(var_pos,var_pos));
+        fprintf('%20s \t %3.2f \n',M_.endo_names_long{strmatch(var_string{var_iter},M_.endo_names,'exact'),:},cyc_moments(var_iter,1))
+    end
+
+    VDITR=OMEGA/2*(oo_.var(x_pos,x_pos)+LPI*oo_.var(pih_pos,pih_pos));
+
+    save('murakami_gm2005_DITR_1st','var_pos','cyc_moments','VDITR','M_','oo_','options_','case_title');
+
+    stoch_simul(order=2,nodisplay,periods=100000);
+
+    save('murakami_gm2005_DITR_2nd','var_pos','M_','oo_','options_','case_title');
+@#else
+    @#if CITR ==1
+         stoch_simul(order=1,nodisplay,irf=20);
+
+         %find output gap and inflation in covariance matrix
+         x_pos=strmatch('x',M_.endo_names,'exact');
+         pih_pos=strmatch('pih',M_.endo_names,'exact');
+
+
+         %%%%% Get standard deviations under CITR %%%%%%
+         var_string={'pih','x','pic','tot','r','der'};
+         fprintf('\nTABLE 1: Cyclical properties of alternative policy regimes\n')
+         fprintf('Case: %s\n', case_title)
+         for var_iter=1:length(var_string)
+            var_pos=strmatch(var_string{var_iter},M_.endo_names,'exact');
+            cyc_moments(var_iter,1)=sqrt(oo_.var(var_pos,var_pos));
+            fprintf('%20s \t %3.2f \n',M_.endo_names_long{strmatch(var_string{var_iter},M_.endo_names,'exact'),:},cyc_moments(var_iter,1))
+         end
+
+         VCITR=OMEGA/2*(oo_.var(x_pos,x_pos)+LPI*oo_.var(pih_pos,pih_pos));
+
+         save('murakami_gm2005_CITR_1st','var_pos','cyc_moments','VCITR','M_','oo_','options_','case_title');
+
+         stoch_simul(order=2,nodisplay,periods=100000);
+
+         save('murakami_gm2005_CITR_2nd','var_pos','M_','oo_','options_','case_title');
+    @#else
+        @#if PEG ==1
+             stoch_simul(order=1,nodisplay,irf=20);
+
+             %find output gap and inflation in covariance matrix
+             x_pos=strmatch('x',M_.endo_names,'exact');
+             pih_pos=strmatch('pih',M_.endo_names,'exact');
+
+
+             %%%%% Get standard deviations under PEG %%%%%%
+             var_string={'pih','x','pic','tot','r','der'};
+             fprintf('\nTABLE 1: Cyclical properties of alternative policy regimes\n')
+             fprintf('Case: %s\n', case_title)
+             for var_iter=1:length(var_string)
+                var_pos=strmatch(var_string{var_iter},M_.endo_names,'exact');
+                cyc_moments(var_iter,1)=sqrt(oo_.var(var_pos,var_pos));
+                fprintf('%20s \t %3.2f \n',M_.endo_names_long{strmatch(var_string{var_iter},M_.endo_names,'exact'),:},cyc_moments(var_iter,1))
+             end
+
+             save('murakami_gm2005_PEG_1st','var_pos','cyc_moments','VPEG','M_','oo_','options_','case_title');
+
+             VPEG=OMEGA/2*(oo_.var(x_pos,x_pos)+LPI*oo_.var(pih_pos,pih_pos));
+
+             stoch_simul(order=2,nodisplay,periods=100000);
+
+             save('murakami_gm2005_PEG_2nd','var_pos','M_','oo_','options_','case_title');
+        @#else
+            @#if OPTIMAL ==1
+                 stoch_simul(order=1,nodisplay,irf=20);
+
+                 %find output gap and inflation in covariance matrix
+                 x_pos=strmatch('x',M_.endo_names,'exact');
+                 pih_pos=strmatch('pih',M_.endo_names,'exact');
+
+
+                 %%%%% Get standard deviations under OP %%%%%%
+                 var_string={'pih','x','pic','tot','r','der'};
+                 fprintf('\nTABLE 1: Cyclical properties of alternative policy regimes\n')
+                 fprintf('Case: %s\n', case_title)
+                 for var_iter=1:length(var_string)
+                     var_pos=strmatch(var_string{var_iter},M_.endo_names,'exact');
+                     cyc_moments(var_iter,1)=sqrt(oo_.var(var_pos,var_pos));
+                     fprintf('%20s \t %3.2f \n',M_.endo_names_long{strmatch(var_string{var_iter},M_.endo_names,'exact'),:},cyc_moments(var_iter,1))
+                 end
+
+                 save('murakami_gm2005_OP_1st','var_pos','cyc_moments','VOP','M_','oo_','options_','case_title');
+
+                 VOP=OMEGA/2*(oo_.var(x_pos,x_pos)+LPI*oo_.var(pih_pos,pih_pos));
+
+                 stoch_simul(order=2,nodisplay,periods=100000);
+
+                 save('murakami_gm2005_OP_2nd','var_pos','M_','oo_','options_','case_title');
+            @#else
+                error('Undefined case')
+            @#endif
+        @#endif
+    @#endif
+@#endif
