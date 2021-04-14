@@ -89,10 +89,10 @@ N = -(1-NSS)/NSS*L;
 Nstar = -(1-NSS)/NSS*Lstar;
 
 [name='Domestic law of motion of capital']
-k = (1-DELTA)*k(-1) + GAMMA*IKRATSS*inv;
+k = ((1-DELTA)/GAMMA)*k(-1) + IKRATSS*inv;
 
 [name='Foreign law of motion of capital']
-kstar = (1-DELTA)*kstar(-1) + GAMMA*IKRATSS*istar;
+kstar = ((1-DELTA)/GAMMA)*kstar(-1) + IKRATSS*istar;
 
 [name='Investment adjustment costs']
 Q = (PI*KAPPA/ISS)*inv + ((1-PI)*KAPPA/ISS)*istar;
