@@ -104,7 +104,7 @@ y = ((PI-1)/PI)*(ystar - (CSS/YSS)*cstar - IYRATSS*istar) + (CSS/YSS)*c + IYRATS
 y = A + ALPHA*k(-1) + (1-ALPHA)*N;
 
 [name='Foreign production technology']
-ystar = Astar + ALPHA*k(-1) + (1-ALPHA)*Nstar;
+ystar = Astar + ALPHA*kstar(-1) + (1-ALPHA)*Nstar;
 
 [name='Domestic real wage']
 w = y - N;
@@ -143,6 +143,7 @@ end;
 
 steady;
 check;
+model_diagnostics;
 
 shocks;
 var epsa = SIGE^2;
