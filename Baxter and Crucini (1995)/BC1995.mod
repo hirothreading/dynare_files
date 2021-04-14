@@ -57,13 +57,13 @@ parameters BETA         $\beta$                     (long_name='Discount factor'
            ;
 
 // Set parameters
-BETA = 1/(1.064^(1/4)); //BC (1995)
-THETA = 0.2; //BC (1993)
-SIGMA = 2; //BC (1995)
+BETA = 1/(1.065^(1/4)); //BC (1995)
+THETA = 0.155; //BC (1993) Chosen so that NSS=0.2
+SIGMA = 0.5; //BC (1995) ***IES***
 GAMMA = 1.004; //BC (1995)
 PI = 0.5; //BC (1995). Not important; see notes.
 DELTA = 0.025; //BC (1995)
-KAPPA = 2/3; //ABK (2016)
+KAPPA = 0.67; //ABK (2016)
 ALPHA = 0.42; //BC (1995). ***This is 1-ALPHA in the original paper. See notes.***
 RHO = 0.906; //BC (1995). ***Baseline calibration in Section 3.3 of BC (1995) paper***
 RHOSTAR = 0.906; //See above
@@ -151,4 +151,8 @@ var epsastar = SIGESTAR^2;
 var epsa,epsastar = PSI;
 end;
 
-stoch_simul(order=1,irf=20);
+write_latex_dynamic_model;
+write_latex_parameter_table;
+write_latex_definitions;
+
+stoch_simul(order=1,irf=40);
