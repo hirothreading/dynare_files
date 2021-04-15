@@ -33,7 +33,7 @@ varexo epsa         $\varepsilon^{a}$       (long_name='Domestic TFP shock')
 //Declare parameters
 parameters BETA         $\beta$                     (long_name='Discount factor')
            THETA        $\theta$                    (long_name='Consumption preference')
-           SIGMA        $\sigma$                    (long_name='Risk aversion')
+           SIGMA        $\sigma$                    (long_name='Intertemporal elasticity of substitution')
            GAMMA        $\gamma$                    (long_name='Trend growth factor')
            PI           $\pi$                       (long_name='Relative size of home economy')
            DELTA        $\delta$                    (long_name='Depreciation rate')
@@ -137,7 +137,7 @@ c = cstar + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L - Lstar);
 A = RHO*A(-1) + NU*Astar(-1) + epsa;
 
 [name='Foreign TFP process']
-Astar = NUSTAR*Astar(-1) + RHOSTAR*A(-1) + epsastar;
+Astar = RHOSTAR*Astar(-1) + NUSTAR*A(-1) + epsastar;
 
 end;
 
@@ -155,4 +155,26 @@ write_latex_dynamic_model;
 write_latex_parameter_table;
 write_latex_definitions;
 
-stoch_simul(order=1,irf=40);
+stoch_simul(order=1,irf=40,nodisplay);
+
+cpos=strmatch('c',M_.endo_names,'exact');
+cstarpos=strmatch('cstar',M_.endo_names,'exact');
+Lpos=strmatch('L',M_.endo_names,'exact');
+Lstarpos=strmatch('Lstar',M_.endo_names,'exact');
+Npos=strmatch('N',M_.endo_names,'exact');
+Nstarpos=strmatch('Nstar',M_.endo_names,'exact');
+kpos=strmatch('k',M_.endo_names,'exact');
+kstarpos=strmatch('kstar',M_.endo_names,'exact');
+ipos=strmatch('inv',M_.endo_names,'exact');
+istarpos=strmatch('istar',M_.endo_names,'exact');
+ypos=strmatch('y',M_.endo_names,'exact');
+ystarpos=strmatch('ystar',M_.endo_names,'exact');
+Apos=strmatch('A',M_.endo_names,'exact');
+Astarpos=strmatch('Astar',M_.endo_names,'exact');
+Qpos=strmatch('Q',M_.endo_names,'exact');
+wpos=strmatch('w',M_.endo_names,'exact');
+wstarpos=strmatch('wstar',M_.endo_names,'exact');
+Rpos=strmatch('R',M_.endo_names,'exact');
+Rstarpos=strmatch('Rstar',M_.endo_names,'exact');
+
+save('BC1995_completemarkets','M_','oo_','options_','cpos','cstarpos','Lpos','Lstarpos','Npos','Nstarpos','kpos','kstarpos','ipos','istarpos','ypos','ystarpos','Apos','Astarpos','Qpos','wpos','wstarpos','Rpos','Rstarpos');
