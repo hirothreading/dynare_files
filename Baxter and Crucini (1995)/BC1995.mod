@@ -33,7 +33,7 @@ varexo epsa         $\varepsilon^{a}$       (long_name='Domestic TFP shock')
 //Declare parameters
 parameters BETA         $\beta$                     (long_name='Discount factor')
            THETA        $\theta$                    (long_name='Consumption preference')
-           SIGMA        $\sigma$                    (long_name='Intertemporal elasticity of substitution')
+           SIGMA        $\sigma$                    (long_name='Inverse of intertemporal elasticity of substitution')
            GAMMA        $\gamma$                    (long_name='Trend growth factor')
            PI           $\pi$                       (long_name='Relative size of home economy')
            DELTA        $\delta$                    (long_name='Depreciation rate')
@@ -59,9 +59,9 @@ parameters BETA         $\beta$                     (long_name='Discount factor'
 // Set parameters
 BETA = 1/(1.065^(1/4)); //BC (1995)
 THETA = 0.155; //BC (1993) Chosen so that NSS=0.2
-SIGMA = 0.5; //BC (1995) ***IES***
+SIGMA = 0.5; //BC (1995) ***inverse of IES***
 GAMMA = 1.004; //BC (1995)
-PI = 0.5; //BC (1995). Not important; see notes.
+PI = 0.5;
 DELTA = 0.025; //BC (1995)
 KAPPA = 0.67; //ABK (2016)
 ALPHA = 0.42; //BC (1995). ***This is 1-ALPHA in the original paper. See notes.***
@@ -98,7 +98,7 @@ kstar = ((1-DELTA)/GAMMA)*kstar(-1) + IKRATSS*istar;
 Q = (PI*KAPPA/ISS)*inv + ((1-PI)*KAPPA/ISS)*istar;
 
 [name='Global resource constraint']
-y = ((PI-1)/PI)*(ystar - (CSS/YSS)*cstar - IYRATSS*istar) + (CSS/YSS)*c + IYRATSS*inv;
+y = (CSS/YSS)*c + (CSS/YSS)*cstar + IYRATSS*inv + IYRATSS*istar - ystar;
 
 [name='Domestic production technology']
 y = A + ALPHA*k(-1) + (1-ALPHA)*N;
