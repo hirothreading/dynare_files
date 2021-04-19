@@ -3,6 +3,9 @@
 // Code written by David Murakami (Oxford, MPhil Economics)
 // For use with Dynare 4.6.3
 
+//Toggle whether to run complete or incomplete markets model
+@#define COMPLETE = 1
+
 // Define variables
 var c           $\hat{c}$         (long_name='Domestic consumption')
     cstar       $\hat{c}^*$       (long_name='Foreign consumption')
@@ -18,6 +21,10 @@ var c           $\hat{c}$         (long_name='Domestic consumption')
     ystar       $\hat{y}^*$       (long_name='Foreign output')
     A           $\hat{A}$         (long_name='Domestic TFP')
     Astar       $\hat{A}^*$       (long_name='Foreign TFP')
+    @#if COMPLETE==0
+        xi          $\hat{\xi}$       (long_name='Domestic net debt')
+        xistar      $\hat{\xi}^*$     (long_name='Foreign net debt')
+    @#endif
     Q           $\hat{Q}$         (long_name='Price of investment goods')
     w           $\hat{w}$         (long_name='Domestic real wages')
     wstar       $\hat{w}^*$       (long_name='Foreign real wages')
@@ -97,20 +104,11 @@ kstar = ((1-DELTA)/GAMMA)*kstar(-1) + IKRATSS*istar;
 [name='Investment adjustment costs']
 Q = (PI*KAPPA/ISS)*inv + ((1-PI)*KAPPA/ISS)*istar;
 
-[name='Global resource constraint']
-y = (CSS/YSS)*c + (CSS/YSS)*cstar + IYRATSS*inv + IYRATSS*istar - ystar;
-
 [name='Domestic production technology']
 y = A + ALPHA*k(-1) + (1-ALPHA)*N;
 
 [name='Foreign production technology']
 ystar = Astar + ALPHA*kstar(-1) + (1-ALPHA)*Nstar;
-
-[name='Domestic real wage']
-w = y - N;
-
-[name='Foreign real wage']
-wstar = ystar - Nstar;
 
 [name='Domestic interest rate']
 R = ALPHA*BETA*YKRATSS*(y - k(-1));
@@ -118,20 +116,17 @@ R = ALPHA*BETA*YKRATSS*(y - k(-1));
 [name='Foreign interest rate']
 Rstar = ALPHA*BETA*YKRATSS*(ystar - kstar(-1));
 
+[name='Domestic real wage']
+w = y - N;
+
+[name='Foreign real wage']
+wstar = ystar - Nstar;
+
 [name='Domestic consumption-leisure choice']
 c = w + L;
 
 [name='Foreign consumption-leisure choice']
 cstar = wstar + Lstar;
-
-[name='Domestic Euler equation']
-c = c(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L(+1) - L) + (1/(THETA*(1-SIGMA)-1))*R(+1);
-
-[name='Foreign Euler equation']
-cstar = cstar(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(Lstar(+1) - Lstar) + (1/(THETA*(1-SIGMA)-1))*Rstar(+1);
-
-[name='Marginal utility of consumption parity condition']
-c = cstar + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L - Lstar);
 
 [name='Domestic TFP process']
 A = RHO*A(-1) + NU*Astar(-1) + epsa;
@@ -139,6 +134,38 @@ A = RHO*A(-1) + NU*Astar(-1) + epsa;
 [name='Foreign TFP process']
 Astar = RHOSTAR*Astar(-1) + NUSTAR*A(-1) + epsastar;
 
+@#if COMPLETE==1
+    [name='Domestic Euler equation']
+    c = c(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L(+1) - L) + (1/(THETA*(1-SIGMA)-1))*R(+1);
+
+    [name='Foreign Euler equation']
+    cstar = cstar(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(Lstar(+1) - Lstar) + (1/(THETA*(1-SIGMA)-1))*Rstar(+1);
+
+    [name='Marginal utility of consumption parity condition']
+    c = cstar + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L - Lstar);
+
+    [name='Global resource constraint']
+    y = (CSS/YSS)*c + (CSS/YSS)*cstar + IYRATSS*inv + IYRATSS*istar - ystar;
+
+    @#else
+        [name='Domestic Euler equation']
+        c = c(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(L(+1) - L) + (1/(THETA*(1-SIGMA)-1))*R;
+
+        [name='Foreign Euler equation']
+        cstar = cstar(+1) + ((1+THETA*(SIGMA-1)-SIGMA)/(THETA*(1-SIGMA)-1))*(Lstar(+1) - Lstar) + (1/(THETA*(1-SIGMA)-1))*Rstar;
+
+        [name='Interest rate parity']
+        R = Rstar;
+
+        [name='Domestic resource constraint']
+        y = (CSS/YSS)*c + IYRATSS*inv;
+
+        [name='Foreign resource constraint']
+        ystar = (CSS/YSS)*cstar + IYRATSS*istar;
+
+        [name='International bond market clearing']
+        0 = xi + xistar;
+@#endif
 end;
 
 steady;
@@ -155,7 +182,7 @@ write_latex_dynamic_model;
 write_latex_parameter_table;
 write_latex_definitions;
 
-stoch_simul(order=1,irf=40,nodisplay);
+stoch_simul(order=1,irf=40);
 
 cpos=strmatch('c',M_.endo_names,'exact');
 cstarpos=strmatch('cstar',M_.endo_names,'exact');
@@ -177,4 +204,8 @@ wstarpos=strmatch('wstar',M_.endo_names,'exact');
 Rpos=strmatch('R',M_.endo_names,'exact');
 Rstarpos=strmatch('Rstar',M_.endo_names,'exact');
 
-save('BC1995_completemarkets','M_','oo_','options_','cpos','cstarpos','Lpos','Lstarpos','Npos','Nstarpos','kpos','kstarpos','ipos','istarpos','ypos','ystarpos','Apos','Astarpos','Qpos','wpos','wstarpos','Rpos','Rstarpos');
+@#if COMPLETE==1
+    save('BC1995_completemarkets','M_','oo_','options_','cpos','cstarpos','Lpos','Lstarpos','Npos','Nstarpos','kpos','kstarpos','ipos','istarpos','ypos','ystarpos','Apos','Astarpos','Qpos','wpos','wstarpos','Rpos','Rstarpos');
+    @#else
+    save('BC1995_incompletemarkets','M_','oo_','options_','cpos','cstarpos','Lpos','Lstarpos','Npos','Nstarpos','kpos','kstarpos','ipos','istarpos','ypos','ystarpos','Apos','Astarpos','Qpos','wpos','wstarpos','Rpos','Rstarpos');
+@#endif
