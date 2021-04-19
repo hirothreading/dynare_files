@@ -58,7 +58,7 @@ parameters BETA         $\beta$                     (long_name='Discount factor'
 
 // Set parameters
 BETA = 1/(1.065^(1/4)); //BC (1995)
-THETA = 0.155; //BC (1993) Chosen so that NSS=0.2
+THETA = 0.24; //BC (1993) Chosen so that NSS=0.2
 SIGMA = 0.5; //BC (1995) ***inverse of IES***
 GAMMA = 1.004; //BC (1995)
 PI = 0.5;
@@ -76,7 +76,7 @@ IKRATSS = (GAMMA + DELTA - 1)/GAMMA;
 YKRATSS = (BETA^(-1)*GAMMA - 1 + DELTA)/(ALPHA*GAMMA);
 IYRATSS = (ALPHA*(GAMMA + DELTA -1))/(BETA^(-1)*GAMMA - 1 + DELTA);
 KNRATSS = (ALPHA/(GAMMA^ALPHA*(BETA^(-1)-(1-DELTA)/GAMMA)))^(1/(1-ALPHA));
-NSS = (GAMMA^(1-ALPHA)*THETA/(1-THETA))/(GAMMA^(1-ALPHA) - (GAMMA+DELTA-1)*KNRATSS^(1-ALPHA) + GAMMA^(1-ALPHA)*THETA/(1-THETA));
+NSS = (GAMMA^(1-ALPHA)*THETA*(1-ALPHA)/(1-THETA))/(GAMMA^(1-ALPHA) - (GAMMA+DELTA-1)*KNRATSS^(1-ALPHA) + GAMMA^(1-ALPHA)*THETA*(1-ALPHA)/(1-THETA));
 YSS = 1/(GAMMA^ALPHA)*KNRATSS^ALPHA*NSS;
 ISS = (ALPHA*(GAMMA + DELTA - 1))*YSS/(BETA^(-1)*GAMMA - 1 + DELTA);
 CSS = YSS - ISS;
