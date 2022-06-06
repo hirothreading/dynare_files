@@ -139,6 +139,10 @@ steady;
 model_diagnostics;
 check;
 
+write_latex_dynamic_model;
+write_latex_parameter_table;
+write_latex_definitions;
+
 shocks;
 var eps_M; stderr 0.01;
 var eps_T; stderr 0.01;
