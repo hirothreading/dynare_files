@@ -1,63 +1,103 @@
-%Hansen's Simple RBC Model
-%David Murakami
-%%
+// Baseline RBC Model 
+// A simple Hansen-style RBC model
+// By David Murakami
+
+// DECLARE VARIABLES
 var
-y $y$ (long_name='output')
-I $I$ (long_name='investment')
-k $k$ (long_name='capital stock')
-h $h$ (long_name='labour supply')
-A $A$ (long_name='technology')
-c $c$ (long_name='consumption')
-r $r$ (long_name='real interest rate')
-w $w$ (long_name='wage rate');
+// QUANTITIES
+Y           $Y$                 (long_name='Output')
+C           $C$                 (long_name='Consumption')
+I           $I$                 (long_name='Investment')
+L           $L$                 (long_name='Labour Supply')
+K           $K$                 (long_name='Capital')
+// PRICES
+R           $R$                 (long_name='Interest Rate')
+W           $w$                 (long_name='Wages')
+// TECHNOLOGY
+A           $A$                 (long_name='TFP')
+;
 
-varexo eps $\epsilon$;
+// EXOGENOUS SHOCKS
+varexo
+eps_a       $\varepsilon_a$     (long_name='TFP Shock')
+;
 
-parameters alpha $\alpha$ (long_name='capital share')
-beta $\beta$ (long_name='stochastic discount factor')
-delta $\delta$ (long_name='depreciation')
-rho $\rho$ (long_name='technology shock persistence')
-eta $\eta$ (long_name='risk aversion coefficient')
-a $a$ (long_name='labour disutility parameter')
-sigmaeps $\sigma_{\epsilon}$ (long_name='volatility of shock');
-
-alpha = 0.36;
-beta =0.99;
+// PARAMETERS
+parameters
+betta        $\beta$            (long_name='Discount factor')
+alphha       $\alpha$           (long_name='Capital share')
+nu           $\nu$              (long_name='Frisch labour supply elasticity')
+delta        $\delta$           (long_name='Depreciation rate')
+chi          $\chi$             (long_name='Labour disutility')
+rho_a        $\rho_a$           (long_name='TFP shock persistence')
+sigma_a      $\sigma_a$         (long_name='TFP shock standard deviation')
+// STEADY STATE PARAMETERS
+KL           $\frac{K}{L}$      (long_name='Steady state capital-labour ratio') //convenient for steady_state_model block       
+;
+// PARAMETERISE
+betta = 0.99;
+alphha = 0.3;
+nu = 2;
 delta = 0.025;
-rho = 0.95;
-eta = 1;
-a = 2;
-sigmaeps = 0.01;
+chi = 2;
+rho_a = 0.95;
+sigma_a = 0.007;
+KL = (alphha/(1/betta-1+delta))^(1/(1-alphha));
 
-%%
+// DECLARE MODEL
 model;
-1/c = beta*((1/c(+1))*(r(+1) +(1-delta))); %consumption euler equation
-(1-alpha)*(y/h) = A/(1-h)*c; %labour first order condition
-c = y +(1-delta)*k(-1) - k; %resource constraint
-k = (1-delta)*k(-1) + I; %capital law of motion
-y = A*k(-1)^(alpha)*h^(1-alpha); %production function
-r = alpha*(y/k(-1)); %interest rate
-w = (1-alpha)*(y/h); %wage rate
-log(A) = rho*log(A(-1)) + eps; %shock process
+// Note: Period utility is: ln(C) - chi*L^(1+1/nu)/(1+1/nu)
+[name='Consumption Euler equation']
+1/C = betta*1/C(+1)*R(+1);
+
+[name='Intratemporal Euler equation']
+chi*L^(1/nu) = (1-alphha)*Y/(C*L);
+
+[name='Resource constraint']
+Y = C + I;
+
+[name='Law of motion for capital']
+K = (1-delta)*K(-1) + I;
+
+[name='Production function']
+Y = A*K(-1)^alphha*L^(1-alphha);
+
+[name='Return on capital']
+R = alphha*(Y/K(-1)) + 1 - delta;
+
+[name='Wage rate']
+W = (1-alphha)*(Y/L);
+
+[name='TFP process']
+log(A) = rho_a*log(A(-1)) + eps_a;
 end;
 
-%%
-initval;
+// PROVIDE ANALYTICAL STEADY STATE EXPRESSIONS
+steady_state_model;
 A = 1;
-h = (1+(a/(1-alpha))*(1-(beta*delta*alpha)/(1-beta*(1-delta))))^(-1);
-k = h*((1/beta -(1-delta))/(alpha*A))^(1/(alpha-1));
-I = delta*k;
-y = A*k^(alpha)*h^(1-alpha);
-c = y - delta*k;
-r = 1/beta - 1 + delta;
-w = (1-alpha)*(y/h);
+L = (((1-alphha)*KL^alphha)/(chi*KL^alphha - chi*delta*KL))^(nu/(1+nu));
+K = KL*L;
+I = delta*K;
+Y = K^alphha*L^(1-alphha);
+C = Y - delta*K;
+R = 1/betta;
+W = (1-alphha)*KL^alphha;
 end;
 
 steady;
+check;
+model_diagnostics;
 
+// DECLARE SHOCKS
 shocks;
-var eps = sigmaeps^2;
+var eps_a = sigma_a^2;
 end;
 
 stoch_simul(order=1,irf=40);
-write_latex_dynamic_model;
+
+write_latex_original_model;
+write_latex_static_model;
+write_latex_dynamic_model(write_equation_tags);
+write_latex_parameter_table;
+write_latex_definitions;
+write_latex_steady_state_model;
