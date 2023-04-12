@@ -1,0 +1,368 @@
+\documentclass[12pt,english]{extarticle}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish,nodayofweek]{datetime}
+\newdateformat{UKvardate}{
+	\THEDAY \monthname[\THEMONTH], \THEYEAR
+}
+
+\usepackage[autostyle]{csquotes}
+\MakeOuterQuote{"} %fixes quotation marks
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{comment}
+\usepackage{longtable}
+\usepackage{booktabs}
+\geometry{
+	a4paper,
+	left=2.5cm,
+	right=2.5cm,
+	top=3cm,
+	bottom=3cm
+}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{euscript} %for subspace S notation with \EuScript{}
+
+%\input{biblatex-aer}%biblatex-aer.tex needs to be TeX document folder
+%\addbibresource{references.bib}
+
+\DeclareUnicodeCharacter{0301}{\'{e}}
+\DeclareUnicodeCharacter{0301}{\'{i}}
+
+\usepackage[colorlinks=true,linkcolor=red,urlcolor=black,citecolor=blue,anchorcolor=red]{hyperref}
+%\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\newtheorem{fact}{Fact}[]
+
+% Set Var, AVar, plim and E characters:
+\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\AVar}{AVar}
+\DeclareMathOperator*{\plim}{plim}
+\newcommand{\E}{\mathbb{E}}
+
+%\date{1 April 2023} % Update date here
+
+\title{\textbf{RBC Model with Financial Frictions}}
+\author{David Murakami}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Competitive equilibrium}
+	\label{sec: RBC model with financial frictions}
+	Consider a simple Hansen-style RBC model but with financial frictions in line with Gertler-Kiyotaki/Gertler-Karadi. 
+	
+	\paragraph{Households.} The representative household faces the following problem:
+	\begin{equation*}
+		\max_{\{C_t,L_t,D_t,K_t^h\}} \, \mathbb{E}_t\sum_{i=0}^\infty\beta^i\left(\ln C_{t+i} - \chi\frac{L_{t+i}^{1+\frac{1}{\nu}}}{1+\frac{1}{\nu}}\right),
+	\end{equation*}
+	subject to their period budget constraint:
+	\begin{equation*}
+		%		\label{eq: household period BC, RBC-GK}
+		C_t + D_t + Q_tK_t^h + \chi_t^h = W_tL_t + (Z_t + \lambda Q_t)K_{t-1}^h + R_{t-1}D_{t-1} + \Pi_t^p,
+	\end{equation*}	
+	where $\lambda=1-\delta$; $Q_t$ is the equity price in terms of final goods; $\chi_t^h$ are portfolio management costs of the workers in the household; $\Pi_t^p$ are profits earned by the household from the production of intermediate goods, production of investment goods, and banking; $Z_t$ is the net rental rate of capital; and $R_t$ is the gross nominal interest rate on deposits. Denote $\sigma$ as the continuation probability of banker maintaining its franchise, and $\gamma$ as the fraction of total household assets given to new bank franchises as initial funds. The efficiency cost of workers directly purchasing equity is given by:
+	\begin{equation*}
+		\chi_{t}^{h} = \frac{\varkappa^h}{2}\left(\frac{K_{t}^{h}}{K_{t}}\right)^2 K_{t}.
+	\end{equation*}
+	
+	The FOCs for labour, savings in equity, and deposits which emerge from the representative household problem, respectively, are:
+	\begin{align}
+		\label{eq: intratemporal Euler equation, RBC-GK}
+		W_t &= \chi L_t^{\frac{1}{\nu}}C_t, \\
+		\label{eq: household FOC wrt equity}
+		1 &= \E_{t}\left[ \Lambda_{t,t+1}\frac{Z_{t+1} + \lambda Q_{t+1}}{Q_{t} + \varkappa^{h}\frac{K_{t}^{h}}{K_{t}}}\right], \\
+		\label{eq:household FOC wrt deposits}
+		1 &= \E_{t}\left[ \Lambda_{t,t+1}R_t \right],
+	\end{align}
+	and where the household stochastic discount factor (SDF) is defined as:
+	\begin{equation*}
+		\Lambda_{t,\tau} = \beta^{\tau-t}\frac{C_t}{C_{\tau}}.
+	\end{equation*}
+	
+	\paragraph{Firms.} There are two representative, perfectly competitive firms in the economy: final good firms and investment good firms. Final good firms produce according to the following constant returns to scale technology:
+	\begin{equation}
+		\label{eq: production, RBC-GK}
+		Y_t = A_tK_{t-1}^\alpha L_t^{1-\alpha}.
+	\end{equation}
+	Wages and return to capital are then given by the following FOCs:
+	\begin{align}
+		\label{eq: wages, RBC-GK}
+		W_t &= (1-\alpha)\frac{Y_t}{L_t}, \\
+		\label{eq: rental rate, RBC-GK}
+		Z_t &= \alpha\frac{Y_t}{K_{t-1}}.
+	\end{align}
+	
+	Investment goods are produced by firms such that the aggregate capital stock grows according to the following law of motion:
+	\begin{equation}
+		\label{eq: law of motion of capital, RBC-GK}
+		K_t = \lambda K_{t-1} + I_t.
+	\end{equation}
+	Total investment costs are given by 
+	\begin{equation*}
+		I_t\left[1 + \Phi\left(\frac{I_t}{I}\right)\right],
+	\end{equation*}
+	where $\Phi(\cdot)$ are investment adjustment costs:
+	\begin{equation*}
+		\Phi\left(\frac{I_t}{I}\right) = \frac{\kappa_I}{2}\left(\frac{I_t}{I} - 1\right)^2,
+	\end{equation*}
+	with $\Phi(1) = \Phi'(1) = 0$ and $\Phi''(\cdot) > 0$. Thus, the representative investment good firm aims to maximises its profits:
+	\begin{equation*}
+		\max_{I_t} \, \left\{Q_tI_t - I_t - \Phi\left(\frac{I_t}{I}\right)I_t\right\}.
+	\end{equation*}
+	Differentiating with respect to $I_t$ gives the following FOC:
+	\begin{equation}
+		\label{eq: equity price, RBC-GK}
+		Q_t = 1 + \Phi\left(\frac{I_t}{I}\right) + \left(\frac{I_t}{I}\right)\Phi'\left(\frac{I_t}{I}\right).
+	\end{equation}
+	
+	
+	\paragraph{Banks.} A banker will seek to maximise their franchise value, $\mathbb{V}_t^b$, which is the expected present discount value of future dividends:
+	\begin{equation*}
+		%\label{eq:franchise value of a bank}
+		\mathbb{V}_t^b = \E_t\left[ \sum_{s=1}^\infty \Lambda_{t,t+s}\sigma^{s-1}(1-\sigma)n_{t+s} \right], 
+	\end{equation*}
+	by choosing quantities $k_t^b$, $d_t$, and $d_t^*$.
+	
+	A financial friction is used to limit a banker's ability to raise funds, whereby a banker faces a moral hazard problem: they can either abscond with the funds they have raised from depositors, or they can operate honestly and pay out their obligations. Absconding is costly, however, and so the banker can only divert a fraction $\theta > 0$ of assets they have accumulated.
+	
+	The caveat to absconding, in addition to only being able to take a fraction of assets away, is that it takes time -- i.e. it take a full period for the banker to abscond. Thus, the banker must decide to abscond in period $t$, in addition to announcing what value of amount of deposits they will choose and prior to realising next period's rental rate of capital. If a banker chooses to abscond in period $t$, their creditors will force the bank to shutdown in period $t+1$, causing the banker's franchise value to become zero.
+	
+	Therefore, the banker will choose to abscond in period $t$ if and only if the return to absconding is greater than the franchise value of the bank at the end of period $t$, $\mathbb{V}_t^b$. It is assumed that the depositors act rationally, and that no rational depositor will supply funds to the bank if they clearly have an incentive to abscond. In other words, the bankers face the following incentive constraint:
+	\begin{equation*}
+		%		\label{eq:banker incentive constraint}
+		\mathbb{V}_t^b \geq \theta Q_tk_t^b,
+	\end{equation*}
+	where I assume that the banker will not abscond in the case of the constraint holding with equality.
+	
+	The balance sheet constraint that the banker faces is:
+	\begin{equation*}
+		%		\label{eq:banker balance sheet constraint}
+		Q_tk_t^b = d_t + n_t,
+	\end{equation*}
+	the flow of funds constraint for a banker is:
+	\begin{equation*}
+		%		\label{eq:banker flow of funds constraint}
+		n_t = (Z_t + \lambda Q_t)k_{t-1}^b - R_{t-1}d_{t-1},
+	\end{equation*}
+	Note that for the case of a new banker, the net worth is the startup fund given by the household (fraction $\gamma$ of the household's assets):
+	\begin{equation*}
+		n_t = \gamma\left(Z_t + \lambda Q_t\right)k_{t-1}.
+	\end{equation*}
+	
+	With the constraints of the banker established, one can proceed to write the banker's problem as:
+	\begin{equation*}
+		%\label{eq:banker's problem}
+		\max_{k_t^b,d_t} \mathbb{V}_t^b = \E_t \left[ \Lambda_{t,t+1} \left\{ (1-\sigma)n_{t+1}+\sigma \mathbb{V}_{t+1}^b \right\} \right],
+	\end{equation*}
+	subject to the incentive constraint and the balance sheet constraint.
+	
+	Since $\mathbb{V}_t^b$ is the franchise value of the bank, which can be interpreted as a "market value", divide $\mathbb{V}_t^b$ by the bank's net worth to obtain a Tobin's Q ratio for the bank denoted by $\psi_t$:
+	\begin{equation*}
+		%		\label{eq:Tobin's Q for bank}
+		\psi_t \equiv \frac{\mathbb{V}_t^b}{n_t} = \E_t \left[ \Lambda_{t,t+1}(1-\sigma+\sigma\psi_{t+1})\frac{n_{t+1}}{n_t} \right].
+	\end{equation*}
+	
+	Define $\phi_t$ as the maximum feasible asset to net worth ratio, or, rather, the leverage ratio of a bank:
+	\begin{equation*}
+		%		\label{eq:banker leverage ratio}
+		\phi_t = \frac{Q_t k_t^b}{n_t}.
+	\end{equation*}
+	Additionally, define $\Omega_{t,t+1}$ as the stochastic discount factor of the banker, $\mu_t$ as the excess return on capital over deposits, and $\upsilon_t$ as the marginal cost of deposits. The banker's problem can then be written as the following:
+	\begin{equation*}
+		%		\label{eq:banker's problem rewritten}
+		\psi_t = \max_{\phi_t}\left\{ \mu_t\phi_t + \upsilon_t \right\},
+	\end{equation*}
+	subject to
+	\begin{equation*}
+		\psi_t \geq \theta\phi_t.
+	\end{equation*}
+	Solving this problem yields:
+	\begin{align}
+		\label{eq:psi solution}
+		\psi_t &= \theta\phi_t, \\
+		\label{eq:phi solution Tobin Q}
+		\phi_t &= \frac{\upsilon_t}{\theta - \mu_t},
+	\end{align}
+	where
+	\begin{align}
+		\label{eq:mu excess return on capital}
+		\mu_t &= \E_t \left[ \Omega_{t,t+1} \left(\frac{Z_{t+1}+\lambda Q_{t+1}}{Q_t} - R_t \right) \right], \\
+		\label{eq:upsilon marginal cost of deposits}
+		\upsilon_t &= \E_t \left[ \Omega_{t,t+1}R_t \right],
+	\end{align}
+	with
+	\begin{equation*}
+		%		\label{eq:Omega SDF of banker}
+		\Omega_{t,t+1} = \Lambda_{t,t+1}(1-\sigma+\sigma\psi_{t+1}).
+	\end{equation*}
+	
+	\paragraph{Market clearing.} 
+	The aggregate resource constraint of the economy is:
+	\begin{equation}
+		\label{eq: aggregate resource constraint RBC-GK}
+		Y_t = C_t + I_t + \chi_t^h.
+	\end{equation}
+	Aggregate capital is the sum of capital owned by workers and bankers:
+	\begin{equation}
+		\label{eq: sum of capital}
+		K_t = K_t^h + K_t^b.
+	\end{equation}
+	Aggregate net worth of banks are given by:
+	\begin{equation}
+		\label{eq: aggregate net worth}
+		N_t = \sigma\left[(Z_t + \lambda Q_t)K_{t-1}^b - R_{t-1}D_{t-1}\right] + \gamma(Z_t + \lambda Q_t)K_{t-1},
+	\end{equation}
+	and the aggregate balance sheet of the banking sector is given by:
+	\begin{align}
+		\label{eq: aggregate leverage rate}
+		Q_tK_t^b &= \phi_t N_t, \\
+		\label{eq: aggregate bank balance sheet}
+		Q_tK_t^b &= D_t + N_t.
+	\end{align}
+	
+	\paragraph{Competitive equilibrium.} A competitive equilibrium is a set of prices, $Q_t$, $R_t$, $W_t$, and $Z_t$; quantities, $C_t$, $D_t$, $I_t$, $K_t$, $K_t^b$, $K_t^h$, $L_t$, $N_t$, and $Y_t$; productivity, $A_t$; and bank variables, $\psi_t$, $\phi_t$, $\mu_t$, and $\upsilon_t$, which satisfy 18 equations \eqref{eq: intratemporal Euler equation, RBC-GK}-\eqref{eq: aggregate bank balance sheet} (including an additional equation for the law of motion for $A_t$).
+	
+	\paragraph{Steady state.} From \eqref{eq: equity price, RBC-GK} when $I_t = I$, we have
+	\begin{equation*}
+		Q = 1,
+	\end{equation*}
+	and from \eqref{eq:household FOC wrt deposits} we have:
+	\begin{equation*}
+		R = \frac{1}{\beta}.
+	\end{equation*}
+	
+	In equilibrium, the incentive compatibility constraint of the banker is binding. Define the discounted spread between equity and deposits, $s$, as:
+	\begin{equation}
+		\label{eq: discounted spread}
+		s = \beta(Z + \lambda) - 1,
+	\end{equation}
+	which is considered to be endogenous.
+	
+	From the household's FOC wrt equity \eqref{eq: household FOC wrt equity} we have:
+	\begin{equation*}
+		\frac{K^h}{K} = \frac{s}{\varkappa^h}.
+	\end{equation*}
+	Additionally, in steady steady we have:
+	\begin{align*}
+		\Omega &= \beta(1-\sigma+\sigma\psi), \\
+		\upsilon &= \frac{\Omega}{\beta}, \\
+		\mu &= \Omega\left(Z + \lambda - \frac{1}{\beta}\right).
+	\end{align*}
+	So, using \eqref{eq: discounted spread}, we can write:
+	\begin{equation*}
+		\frac{\mu}{\upsilon} = s.
+	\end{equation*}
+	
+	Next, define $J$ as:
+	\begin{equation*}
+		J = \frac{n_{t+1}}{n} = (Z + \lambda)\frac{K^b}{N} - \frac{D}{N}R,
+	\end{equation*}
+	and use
+	\begin{align*}
+		\frac{D}{N} &= \phi - 1, \\
+		\phi &= \frac{K^b}{N},
+	\end{align*}
+	to write $J$ as
+	\begin{equation*}
+		\begin{split}
+			J &= \left(Z + \lambda - R\right)\phi + R \\
+			&= \frac{1}{\beta}\left(s\phi + 1\right).
+		\end{split}
+	\end{equation*}
+	
+	Then, from \eqref{eq: aggregate net worth} we have:
+	\begin{align*}
+		N &= \sigma\left[(Z + \lambda)K^b - RD\right] + \gamma\left(Z+\lambda\right) \\
+		\frac{N}{N}	&= \sigma\left[(Z+\lambda)\frac{K^b}{N} - \frac{D}{N}R\right] + \frac{\gamma}{N}(Z + \lambda)K \\
+		\beta &= \sigma\beta J + \frac{\gamma\beta}{N}(Z + \lambda)K \\
+		& = \sigma\beta J + \frac{\gamma K^b}{N}\left(1 + \varkappa^h\frac{K^h}{K}\right)\frac{K}{K^b} \\
+		&= \sigma\beta J + \gamma(1+s)\phi\frac{1}{\frac{K^b}{K}} \\
+		&= \sigma\left(s\phi + 1\right) + \gamma(1+s)\phi\frac{1}{1-\frac{s}{\varkappa^h}} \\
+		\beta &= \sigma + \left(\sigma s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}\right)\phi,
+	\end{align*}
+	or
+	\begin{equation*}
+		\phi = \frac{\beta - \sigma}{\sigma s + \gamma \frac{1+s}{1-\frac{s}{\varkappa^h}}}.
+	\end{equation*}
+	
+	The Tobin's Q ratio for the bank, $\psi_t \equiv \frac{\mathbb{V}_t^b}{n_t}$, in steady state is \begin{equation*}
+		\begin{split}
+			\psi &= \beta(1-\sigma+\sigma\psi)J \\
+			&= \frac{(1-\sigma)(s\phi + 1)}{1-\sigma-\sigma s\phi},
+		\end{split}
+	\end{equation*}
+	and from \eqref{eq:psi solution} we have $\psi = \theta\phi$. Combine the expressions for $\phi$ and $\psi$ to get
+	\begin{equation*}
+		\frac{\theta(\beta-\sigma)}{\sigma s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}} = \frac{(1-\sigma)\left[\frac{s(\beta-\sigma)}{\sigma s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}} + 1\right]}{1-\sigma - \sigma\left[\frac{s(\beta-\sigma)}{\sigma s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}}\right]},
+	\end{equation*}
+	then rearrange:
+	\begin{equation*}
+		\begin{split}
+			0 &= H(s,\gamma) \\
+			&= (1-\sigma)\left[\beta s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}\right]\left[\sigma s + \gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}\right] - \theta(\beta-\sigma)\left[\sigma(1-\beta)s + (1-\sigma)\gamma\frac{1+s}{1-\frac{s}{\varkappa^h}}\right].
+		\end{split}
+	\end{equation*}
+	We can observe that as $\gamma \rightarrow 0$,
+	\begin{equation*}
+		\begin{split}
+			H(s,0) &= (1-\sigma)s^2\beta\sigma - \theta(\beta-\sigma)\left(\sigma(1-\beta)s\right) \\
+			\implies s &\rightarrow \theta\frac{(\beta-\sigma)(1-\beta)}{(1-\sigma)\beta}.
+		\end{split}
+	\end{equation*}
+	Thus, there exists a unique steady state equilibrium with positive spread. Due to the constant returns to scale property of the banker, bank variables depend only on parameters of the banker ($s,\theta,\gamma,\beta,\sigma$) and not on the firm/supply side parameters in steady state.
+	
+	Given $s$, we can then get 
+	\begin{equation*}
+		Z = \frac{1}{\beta}(1+s) - \lambda.
+	\end{equation*}
+	From \eqref{eq: household FOC wrt equity} we also have:
+	\begin{equation*}
+		\frac{K^h}{K} = \frac{s}{\varkappa^h}.
+	\end{equation*}
+	
+	We know that in this economy marginal cost is equal to unity, it then follows that
+	\begin{equation*}
+		1 = \frac{1}{A}\left(\frac{Z}{\alpha}\right)^\alpha\left(\frac{W}{1-\alpha}\right)^{1-\alpha}.
+	\end{equation*}
+	As we have $Z$, we then get $W$:
+	\begin{equation*}
+		W = (1-\alpha)\left(\frac{\alpha}{Z}\right)^{\frac{\alpha}{1-\alpha}}.
+	\end{equation*}
+	
+	The capital-output ratio is standard:
+	\begin{equation*}
+		\frac{K}{Y} = \frac{\alpha}{Z}.
+	\end{equation*}
+	Then from \eqref{eq: intratemporal Euler equation, RBC-GK} and \eqref{eq: wages, RBC-GK}, rearrange to get $L$:
+	\begin{equation*}
+		L = \left[\frac{(1-\alpha)}{\chi}\frac{Y}{C}\right]^{\frac{\nu}{1+\nu}},
+	\end{equation*}
+	and then combine with \eqref{eq: aggregate resource constraint RBC-GK} and \eqref{eq: law of motion of capital, RBC-GK} to write:
+	\begin{equation*}
+		L = \left[\frac{(1-\alpha)}{\chi}\frac{1}{1-\delta\frac{K}{Y}-\frac{s^2}{2\varkappa^h}\frac{K}{Y}}\right]^{\frac{\nu}{1+\nu}}.
+	\end{equation*}
+	Then, get $K$ by dividing \eqref{eq: rental rate, RBC-GK} by \eqref{eq: wages, RBC-GK} and rearranging:
+	\begin{equation*}
+		K = \frac{\alpha}{1-\alpha}\frac{WL}{Z}.
+	\end{equation*}
+	With $K$ and $L$, get $Y$ through \eqref{eq: production, RBC-GK} and then back out $C$ from \eqref{eq: intratemporal Euler equation, RBC-GK}.
+	
+\end{document}

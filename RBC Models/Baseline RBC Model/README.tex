@@ -1,0 +1,153 @@
+\documentclass[12pt,english]{extarticle}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish,nodayofweek]{datetime}
+\newdateformat{UKvardate}{
+	\THEDAY \monthname[\THEMONTH], \THEYEAR
+}
+
+\usepackage[autostyle]{csquotes}
+\MakeOuterQuote{"} %fixes quotation marks
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{comment}
+\usepackage{longtable}
+\usepackage{booktabs}
+\geometry{
+	a4paper,
+	left=2.5cm,
+	right=2.5cm,
+	top=3cm,
+	bottom=3cm
+}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{euscript} %for subspace S notation with \EuScript{}
+
+%\input{biblatex-aer}%biblatex-aer.tex needs to be TeX document folder
+%\addbibresource{references.bib}
+
+\DeclareUnicodeCharacter{0301}{\'{e}}
+\DeclareUnicodeCharacter{0301}{\'{i}}
+
+\usepackage[colorlinks=true,linkcolor=red,urlcolor=black,citecolor=blue,anchorcolor=red]{hyperref}
+%\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\newtheorem{fact}{Fact}[]
+
+% Set Var, AVar, plim and E characters:
+\DeclareMathOperator*{\Var}{Var}
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\AVar}{AVar}
+\DeclareMathOperator*{\plim}{plim}
+\newcommand{\E}{\mathbb{E}}
+
+%\date{1 April 2023} % Update date here
+
+\title{\textbf{A Baseline RBC Model}}
+\author{David Murakami}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Ramsey social planner problem}
+	\label{sec: baseline RBC model}
+	Consider a Hansen-style RBC model.Final good firms use the production function $Y_t = A_tK_{t-1}^\alpha L_t^{1-\alpha}$. The representative household utility function is $u(C_t,L_t) = \ln C_t - \chi L^{1+\nu^{-1}}/(1+\nu^{-1})$. Set $\alpha=0.3$, $\nu=2$, $\chi=4.5$, $\beta=0.99$, $\delta=0.025$, $\rho_a=0.95$, and $\sigma_a=0.01$.
+	
+	As there are no distortions, we can solve the model from the perspective of the Ramsey social planner who aims to
+	\begin{equation*}
+		\max_{\{C_t,L_t,K_t\}} \, \E_t \sum_{i=0}^\infty \beta^i \left(\ln C_{t+i} - \chi \frac{L_{t+i}^{1+\frac{1}{\nu}}}{1+\frac{1}{\nu}} \right),
+	\end{equation*}
+	subject to 
+	\begin{align}
+		\label{eq: aggregate resource constraint RBC}
+		Y_t &= C_t + I_t, \\
+		\label{eq: law of motion of capital RBC}
+		K_t &= I_t + (1-\delta)K_{t-1}, \\
+		\label{eq: production function RBC}
+		Y_t &= A_tK_{t-1}^\alpha L_t^{1-\alpha}, \\
+		\label{eq: TFP process RBC}
+		\ln A_t &= \rho_a \ln A_{t-1} + \varepsilon_t^a, \quad \varepsilon_t^a \overset{IID}{\sim} \mathcal{N}(0,\sigma_a^2).
+	\end{align}
+	Solving the problem yields the following first-order conditions:
+	\begin{align*}
+		\frac{1}{C_t} &= \beta \E_t\left[\frac{1}{C_{t+1}}\left(\alpha\frac{Y_{t+1}}{K_t} + 1 - \delta\right)\right], \\
+		\chi L_t^{\frac{1}{\nu}} &= \frac{(1-\alpha)Y_t}{C_tL_t}.
+	\end{align*}
+	
+	Define the marginal value of an additional unit of capital in period $t+1$ as
+	\begin{equation}
+		\label{eq: capital return RBC}
+		R_{t+1} = \alpha\frac{Y_{t+1}}{K_t} + 1 - \delta,
+	\end{equation}
+	and define the marginal product of labour as the real wage,
+	\begin{equation}
+		\label{eq: wages RBC}
+		W_t = (1-\alpha)\frac{Y_t}{L_t}
+	\end{equation}
+	Use these to write the FOCs as:
+	\begin{align}
+		\label{eq: consumption euler equation RBC}
+		\frac{1}{C_t} &= \beta \E_t\left[\frac{R_{t+1}}{C_{t+1}}\right], \\
+		\label{eq: intratemporal euler equation RBC}
+		W_t &= \chi L_t^\frac{1}{\nu}C_t.
+	\end{align}
+	
+	\paragraph{Centralised equilibrium.} The equilibrium is a set of prices, $R_t$ and $W_t$; allocations, $Y_t$, $C_t$, $L_t$, $I_t$, and $K_t$; and productivity, $A_t$, which satisfy eight equations, \eqref{eq: aggregate resource constraint RBC}-\eqref{eq: intratemporal euler equation RBC}.
+	
+	\paragraph{Steady state.} Steady state quantities are found by first using the fact that $A=1$, and from \eqref{eq: capital return RBC} and \eqref{eq: consumption euler equation RBC} we have:
+	\begin{equation*}
+		\begin{split}
+			\frac{1}{\beta} &= \alpha\left(\frac{K}{L}\right)^{\alpha-1} + 1 - \delta \\
+			\implies \frac{K}{L} &= \left(\frac{\alpha}{\beta^{-1}-1+\delta}\right)^{\frac{1}{1-\alpha}}.
+		\end{split}
+	\end{equation*}
+	Then express $W$ in \eqref{eq: wages RBC} as:
+	\begin{equation*}
+		W = (1-\alpha)\left(\frac{K}{L}\right)^\alpha.
+	\end{equation*}
+	
+	From \eqref{eq: law of motion of capital RBC} we know:
+	\begin{equation*}
+		I = \delta K.
+	\end{equation*}
+	Then, combine this with \eqref{eq: aggregate resource constraint RBC} and \eqref{eq: production function RBC} to get the consumption-output ratio:
+	\begin{equation*}
+		\frac{C}{L} = \left(\frac{K}{L}\right)^\alpha - \delta\left(\frac{K}{L}\right).
+	\end{equation*}
+	
+	Next, turn to the intratemporal Euler equation \eqref{eq: intratemporal euler equation RBC}, and multiply both sides by $L$:
+	\begin{equation*}
+		\chi L^{\frac{1+\nu}{\nu}} = \frac{(1-\alpha)L}{C}\left(\frac{K}{L}\right)^\alpha,
+	\end{equation*}
+	and then rearrange to get $C/L$:
+	\begin{equation*}
+		\frac{C}{L} = \frac{(1-\alpha)\left(\frac{K}{L}\right)^\alpha}{\chi L^{\frac{1+\nu}{\nu}}}.
+	\end{equation*}
+	Set this equal to the previous expression for $C/L$ to solve for $L$:
+	\begin{equation*}
+		L = \left\{\frac{(1-\alpha)\left(\frac{K}{L}\right)^\alpha}{\chi\left[\left(\frac{K}{L}\right)^\alpha - \delta\frac{K}{L}\right]}\right\}^{\frac{\nu}{1+\nu}}.
+	\end{equation*}
+	
+	With $L$ in hand, turn back to the capital-labour ratio to obtain $K$:
+	\begin{equation*}
+		K = \left(\frac{\alpha}{\beta^{-1}-1+\delta}\right)^{\frac{1}{1-\alpha}}L.
+	\end{equation*}
+	Thus, $I$ and $Y$ can easily be computed, after which $C$ can obtained easily using the aggregate resource constraint \eqref{eq: aggregate resource constraint RBC}.
+	
+\end{document}

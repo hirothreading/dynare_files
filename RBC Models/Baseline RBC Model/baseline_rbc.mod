@@ -31,18 +31,15 @@ delta        $\delta$           (long_name='Depreciation rate')
 chi          $\chi$             (long_name='Labour disutility')
 rho_a        $\rho_a$           (long_name='TFP shock persistence')
 sigma_a      $\sigma_a$         (long_name='TFP shock standard deviation')
-// STEADY STATE PARAMETERS
-KL           $\frac{K}{L}$      (long_name='Steady state capital-labour ratio') //convenient for steady_state_model block       
 ;
 // PARAMETERISE
 betta = 0.99;
 alphha = 0.3;
 nu = 2;
 delta = 0.025;
-chi = 2;
+chi = 4.5;
 rho_a = 0.95;
-sigma_a = 0.007;
-KL = (alphha/(1/betta-1+delta))^(1/(1-alphha));
+sigma_a = 0.01;
 
 // DECLARE MODEL
 model;
@@ -75,6 +72,7 @@ end;
 // PROVIDE ANALYTICAL STEADY STATE EXPRESSIONS
 steady_state_model;
 A = 1;
+KL = (alphha/(1/betta-1+delta))^(1/(1-alphha));
 L = (((1-alphha)*KL^alphha)/(chi*KL^alphha - chi*delta*KL))^(nu/(1+nu));
 K = KL*L;
 I = delta*K;

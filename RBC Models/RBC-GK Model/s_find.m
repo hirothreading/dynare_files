@@ -1,0 +1,9 @@
+function s=s_find(sigma,betta,gamma,theta,varkappa_h)
+    Hfun = @(s,sigma,betta,gamma,theta,varkappa_h) (1-sigma)*(betta*s...
+            +gamma*(1+s)/(1-s/varkappa_h))*(sigma*s...
+            +gamma*(1+s)/(1-s/varkappa_h))-theta*(betta-sigma)*(sigma*(1-betta)*s...
+            +(1-sigma)*gamma*(1+s)/(1-s/varkappa_h));
+    fun = @(s) Hfun(s,sigma,betta,gamma,theta,varkappa_h);
+    x0 = [0.000001 1];
+    s = fzero(fun,x0);
+end
