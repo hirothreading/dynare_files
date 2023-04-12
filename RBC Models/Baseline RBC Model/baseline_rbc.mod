@@ -1,6 +1,7 @@
 // Baseline RBC Model 
 // A simple Hansen-style RBC model
-// By David Murakami
+// By David Murakami (University of Milan and University of Pavia)
+// Implemented on Dynare 5.3
 
 // DECLARE VARIABLES
 var
