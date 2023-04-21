@@ -68,7 +68,7 @@ sigma_a = 0.01;
 // DECLARE MODEL
 model;
 // Note: Period utility is: ln(C) - chi*L^(1+1/nu)/(1+1/nu)
-[name='Intertemporal Euler equation']
+[name='Intratemporal Euler equation']
 W = chi*L^(1/nu)*C;
 
 [name='Euler equation wrt equity']
