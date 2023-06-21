@@ -20,7 +20,7 @@ A           $A$                 (long_name='TFP')
 
 // EXOGENOUS SHOCKS
 varexo
-eps_a       $\varepsilon_a$     (long_name='TFP Shock')
+eps_a       $\varepsilon^a$     (long_name='TFP Shock')
 ;
 
 // PARAMETERS
