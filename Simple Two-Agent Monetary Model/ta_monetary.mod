@@ -1,4 +1,4 @@
-// Baseline Two-Agent Endowment Economy with CBDCs
+// Baseline Two-Agent Endowment Economy
 // Written by David Murakami, Ivan Shchapov, and Ganesh Viswanath-Natraj
 // Version: 31 May 2022
 // Implemented in Dynare 5.1
@@ -81,7 +81,7 @@ C_u = M(-1)/Pi;
 
 // Market clearing
 [name='Economy Resource Constraint']
-Gamma*(T_u - M - chi_M) + (1-Gamma)*(T_h - C_h) = 0;
+Gamma*T_h + (1-Gamma)*T_u = C;
 
 [name='Aggregate Consumption']
 C = Gamma*C_h + (1-Gamma)*C_u;
