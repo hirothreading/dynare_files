@@ -7,4 +7,4 @@ For those looking for more reference .mod files for their macro DSGE research, t
 [Johannes Pfeifer](https://github.com/JohannesPfeifer/DSGE_mod) and the entire [Dynare](https://www.dynare.org/about/) team.
 
 ## Replication issues or feedback
-Feedback is always welcome for these things. So please [email me](mailto:david.murakami@economics.ox.ac.uk) for any queries or advice you may have.
+Feedback is always welcome for these things. So please [email me](mailto:david.murakami@unimi.it) for any queries or advice you may have.
